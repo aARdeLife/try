@@ -2,140 +2,49 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Camera with Object Detection and 3D Model</title>
-    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/coco-ssd"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/gh/mrdoob/three.js/examples/js/loaders/GLTFLoader.js"></script>
+    <title>3D Modeling</title>
     <style>
-        canvas {
-            position: absolute;
-            z-index: 2;
-            pointer-events: none;
-        }
-        #camera--view {
-            position: absolute;
-            z-index: 1;
-        }
-        #three-scene {
-            position: absolute;
-            z-index: 3;
-            pointer-events: none;
-        }
+        body { margin: 0; }
+        canvas { display: block; }
     </style>
 </head>
 <body>
-    <video id="camera--view" autoplay playsinline></video>
-    <canvas id="canvas"></canvas>
-    <div id="three-scene"></div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <script>
-        // Set constraints for the video stream
-        var constraints = { video: { facingMode: "user" }, audio: false };
-
-        // Define constants
-        const cameraView = document.querySelector("#camera--view");
-        const canvas = document.querySelector("#canvas");
-        const ctx = canvas.getContext("2d");
-        const threeSceneContainer = document.querySelector("#three-scene");
-
-        // Initialize Three.js scene
+        // Set up Three.js scene, camera, and renderer
         const scene = new THREE.Scene();
         const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-        const renderer = new THREE.WebGLRenderer({ alpha: true });
+        const renderer = new THREE.WebGLRenderer();
         renderer.setSize(window.innerWidth, window.innerHeight);
-        threeSceneContainer.appendChild(renderer.domElement);
+        document.body.appendChild(renderer.domElement);
 
-        // Add a light to the scene
-        const light = new THREE.AmbientLight(0xffffff, 0.5);
-        scene.add(light);
+        // Add 3D objects (e.g., a cube) to the scene
+        const geometry = new THREE.BoxGeometry();
+        const material = new THREE.MeshBasicMaterial({ color: 0x00ff00 });
+        const cube = new THREE.Mesh(geometry, material);
+        scene.add(cube);
+        camera.position.z = 5;
 
+        // Animate the 3D scene
         function animate() {
             requestAnimationFrame(animate);
+            cube.rotation.x += 0.01;
+            cube.rotation.y += 0.01;
             renderer.render(scene, camera);
         }
-        animate();
 
-        // Load the Coco SSD model for object detection
-        let model;
-        async function loadModel() {
-            model = await cocoSsd.load();
-            console.log("Model loaded");
-        }
-        loadModel();
-
-        // Access the device camera and stream to cameraView
-        function cameraStart() {
-            navigator.mediaDevices
-                .getUserMedia(constraints)
-                .then(function(stream) {
-                track = stream.getTracks()[0];
-                cameraView.srcObject = stream;
-                // Set canvas size
-                canvas.width = cameraView.offsetWidth;
-                canvas.height = cameraView.offsetHeight;
+        // Access user's camera
+        navigator.mediaDevices.getUserMedia({ video: true })
+            .then((stream) => {
+                // Process video frames here
             })
-            .catch(function(error) {
-                console.error("Oops. Something is broken.", error);
+            .catch((error) => {
+                console.error("Error accessing the camera", error);
             });
-        }
 
-        // Perform object detection and draw bounding boxes
-        async function detectAndDraw() {
-            if (model) {
-                const predictions = await model.detect(cameraView);
-                ctx.clearRect(0, 0, canvas.width, canvas.height);
-                predictions.forEach(prediction => {
-                    if (prediction.class) {
-                        const x = prediction.bbox[0];
-                        const y = prediction.bbox[1];
-                        const width = prediction.bbox[2];
-                        const height = prediction.bbox[3];
-
-                        ctx.strokeStyle =
-                        ctx.strokeStyle = "lime";
-                        ctx.lineWidth = 4;
-                        ctx.strokeRect(x, y, width, height);
-                    }
-                });
-            }
-            requestAnimationFrame(detectAndDraw);
-        }
-        detectAndDraw();
-
-        // Start the video stream when the window loads
-        window.addEventListener("load", cameraStart, false);
-
-        // Load the 3D model when user clicks on detected object
-        canvas.addEventListener("click", async function(event) {
-            const x = event.clientX;
-            const y = event.clientY;
-            const selectedObject = model.predictions.find(prediction =>
-                x >= prediction.bbox[0] &&
-                x <= prediction.bbox[0] + prediction.bbox[2] &&
-                y >= prediction.bbox[1] &&
-                y <= prediction.bbox[1] + prediction.bbox[3]
-            );
-
-            if (selectedObject) {
-                // Load the 3D model and display it
-                const loader = new THREE.GLTFLoader();
-                const modelUrl = "https://github.com/aARdeLife/SuperVision/blob/8d09569fded3d5d604b41aa191eec52369b06b6c/polaris/polforweb%20(3).glb";
-
-                loader.load(modelUrl, function(gltf) {
-                    // Add the 3D model (gltf.scene) to the Three.js scene
-                    scene.add(gltf.scene);
-
-                    // Position, scale, and rotate the model as needed
-                    gltf.scene.position.set(0, 0, -5); // Set the model's position
-                    gltf.scene.scale.set(1, 1, 1); // Set the model's scale
-                    gltf.scene.rotation.set(0, 0, 0); // Set the model's rotation
-
-                }, undefined, function(error) {
-                    console.error("An error occurred while loading the 3D model", error);
-                });
-            }
-        });
+        animate();
     </script>
 </body>
 </html>
