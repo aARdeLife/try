@@ -11,27 +11,27 @@ video {
   height: 240px;
 }
 
-#keyboard {
+.keyboard {
   display: grid;
   grid-template-columns: repeat(10, 1fr);
   gap: 5px;
-  margin-top: 10px;
+  background-color: rgba(255, 255, 255, 0.5);
+  padding: 10px;
 }
 
 .key {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  height: 40px;
-  background-color: lightgray;
+  padding: 10px;
+  background-color: transparent;
+  text-align: center;
   cursor: pointer;
+  color: black;
+  font-weight: bold;
 }
 
-input[type="text"] {
+.textbox {
   width: 300px;
-  margin-top: 10px;
-}
-
-.voice-button {
-  margin-top: 10px;
+  margin-top: 20px;
+  padding: 10px;
+  border: 1px solid #ccc;
+  text-align: center;
 }
