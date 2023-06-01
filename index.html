@@ -37,6 +37,8 @@
       background-color: transparent;
       text-align: center;
       cursor: pointer;
+      color: black; /* Add desired color for key labels */
+      font-weight: bold; /* Adjust font weight as needed */
     }
 
     .textbox {
@@ -45,6 +47,15 @@
       padding: 10px;
       border: 1px solid #ccc;
       text-align: center;
+    }
+
+    .voice-button {
+      margin-top: 10px;
+      padding: 10px 20px;
+      background-color: #4CAF50; /* Add desired background color for voice button */
+      color: white; /* Add desired color for voice button text */
+      border: none;
+      cursor: pointer;
     }
   </style>
 </head>
@@ -83,25 +94,36 @@
       <div class="key">Delete</div>
       <div class="key">Enter</div>
       <div class="key">Ctrl</div>
+      <div class="key">Voice</div>
     </div>
+
+    <button class="voice-button" id="voiceButton">Start Voice Typing</button>
   </div>
 
   <script>
-    const keyboard = document.querySelector('.keyboard');
-    const textbox = document.querySelector('#textInput');
+    const keys = document.querySelectorAll('.key');
+    const textbox = document.getElementById('textInput');
+    const voiceButton = document.getElementById('voiceButton');
 
-    keyboard.addEventListener('click', function(e) {
-      const key = e.target.innerText;
+    keys.forEach((key) => {
+      key.addEventListener('click', () => {
+        const keyValue = key.textContent;
 
-      if (key === 'Space') {
-        textbox.value += ' ';
-      } else if (key === 'Delete') {
-        textbox.value = textbox.value.slice(0, -1);
-      } else if (key === 'Enter') {
-        textbox.value += '\n';
-      } else {
-        textbox.value += key;
-      }
+        if (keyValue === 'Space') {
+          textbox.value += ' ';
+        } else if (keyValue === 'Delete') {
+          textbox.value = textbox.value.slice(0, -1);
+        } else if (keyValue === 'Enter') {
+          textbox.value += '\n';
+        } else {
+          textbox.value += keyValue;
+        }
+      });
+    });
+
+    voiceButton.addEventListener('click', () => {
+      // Handle voice typing functionality here
+      // Add your code to start voice recognition
     });
   </script>
 </body>
