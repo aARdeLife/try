@@ -4,63 +4,87 @@
   <meta charset="UTF-8">
   <title>QWERTY Keyboard</title>
   <style>
+    body {
+      margin: 0;
+      padding: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      background-image: url('background.jpg'); /* Replace 'background.jpg' with your own image */
+      background-size: cover;
+      background-position: center;
+      filter: blur(5px); /* Adjust the blur intensity as needed */
+    }
+
+    .container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
     .keyboard {
       display: grid;
       grid-template-columns: repeat(10, 1fr);
       gap: 5px;
-      max-width: 600px;
-      margin: 0 auto;
+      background-color: rgba(255, 255, 255, 0.5); /* Adjust the transparency as needed */
+      padding: 10px;
+      backdrop-filter: blur(10px); /* Adjust the blur intensity as needed */
     }
 
     .key {
       padding: 10px;
-      background-color: #f2f2f2;
+      background-color: transparent;
       text-align: center;
       cursor: pointer;
     }
 
     .textbox {
       width: 300px;
-      margin: 20px auto;
+      margin-top: 20px;
       padding: 10px;
       border: 1px solid #ccc;
+      text-align: center;
     }
   </style>
 </head>
 <body>
-  <div class="keyboard">
-    <div class="key">Q</div>
-    <div class="key">W</div>
-    <div class="key">E</div>
-    <div class="key">R</div>
-    <div class="key">T</div>
-    <div class="key">Y</div>
-    <div class="key">U</div>
-    <div class="key">I</div>
-    <div class="key">O</div>
-    <div class="key">P</div>
-    <div class="key">A</div>
-    <div class="key">S</div>
-    <div class="key">D</div>
-    <div class="key">F</div>
-    <div class="key">G</div>
-    <div class="key">H</div>
-    <div class="key">J</div>
-    <div class="key">K</div>
-    <div class="key">L</div>
-    <div class="key">Z</div>
-    <div class="key">X</div>
-    <div class="key">C</div>
-    <div class="key">V</div>
-    <div class="key">B</div>
-    <div class="key">N</div>
-    <div class="key">M</div>
-    <div class="key">Space</div>
-    <div class="key">Delete</div>
-    <div class="key">Enter</div>
-  </div>
+  <div class="container">
+    <input type="text" class="textbox" id="textInput">
 
-  <input type="text" class="textbox" id="textInput">
+    <div class="keyboard">
+      <div class="key">Q</div>
+      <div class="key">W</div>
+      <div class="key">E</div>
+      <div class="key">R</div>
+      <div class="key">T</div>
+      <div class="key">Y</div>
+      <div class="key">U</div>
+      <div class="key">I</div>
+      <div class="key">O</div>
+      <div class="key">P</div>
+      <div class="key">A</div>
+      <div class="key">S</div>
+      <div class="key">D</div>
+      <div class="key">F</div>
+      <div class="key">G</div>
+      <div class="key">H</div>
+      <div class="key">J</div>
+      <div class="key">K</div>
+      <div class="key">L</div>
+      <div class="key">Z</div>
+      <div class="key">X</div>
+      <div class="key">C</div>
+      <div class="key">V</div>
+      <div class="key">B</div>
+      <div class="key">N</div>
+      <div class="key">M</div>
+      <div class="key">Space</div>
+      <div class="key">Delete</div>
+      <div class="key">Enter</div>
+      <div class="key">Ctrl</div>
+    </div>
+  </div>
 
   <script>
     const keyboard = document.querySelector('.keyboard');
