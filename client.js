@@ -18,8 +18,21 @@ document.addEventListener('DOMContentLoaded', () => {
     const imageData = canvasContext.getImageData(0, 0, canvasElement.width, canvasElement.height);
     const dataUrl = canvasElement.toDataURL('image/jpeg');
 
-    // Send the dataUrl to the server using a network request (e.g., AJAX, fetch)
-    // Handle the response to get the eye positions and update the overlay on the web page
-    // Add your code here to send the dataUrl to the server and process the response
+    // Send the dataUrl to the server for eye tracking analysis
+    fetch('/eye-tracking', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ image: dataUrl }),
+    })
+      .then((response) => response.json())
+      .then((eyeData) => {
+        // Process the eyeData received from the server and update the overlay
+        // Add your code here to handle the eyeData and update the overlay on the web page
+      })
+      .catch((error) => {
+        console.error('Error sending data to the server:', error);
+      });
   }, 100);
 });
