@@ -18,6 +18,13 @@
       text-align: center;
       cursor: pointer;
     }
+
+    .textbox {
+      width: 300px;
+      margin: 20px auto;
+      padding: 10px;
+      border: 1px solid #ccc;
+    }
   </style>
 </head>
 <body>
@@ -48,6 +55,30 @@
     <div class="key">B</div>
     <div class="key">N</div>
     <div class="key">M</div>
+    <div class="key">Space</div>
+    <div class="key">Delete</div>
+    <div class="key">Enter</div>
   </div>
+
+  <input type="text" class="textbox" id="textInput">
+
+  <script>
+    const keyboard = document.querySelector('.keyboard');
+    const textbox = document.querySelector('#textInput');
+
+    keyboard.addEventListener('click', function(e) {
+      const key = e.target.innerText;
+
+      if (key === 'Space') {
+        textbox.value += ' ';
+      } else if (key === 'Delete') {
+        textbox.value = textbox.value.slice(0, -1);
+      } else if (key === 'Enter') {
+        textbox.value += '\n';
+      } else {
+        textbox.value += key;
+      }
+    });
+  </script>
 </body>
 </html>
