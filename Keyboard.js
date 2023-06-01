@@ -1,7 +1,7 @@
-// Function to start the video stream from the front-facing camera
+// Start the video stream from the front-facing camera
 async function startVideo() {
   const videoElement = document.getElementById('video');
-  
+
   try {
     const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'user' } });
     videoElement.srcObject = stream;
@@ -10,72 +10,88 @@ async function startVideo() {
   }
 }
 
-// Function to start eye tracking
+// Start the eye tracking
 async function startEyeTracking() {
   const videoElement = document.getElementById('video');
-  
-  try {
-    const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'user' } });
-    videoElement.srcObject = stream;
-    
-    const gazeTracker = new xgaze.GazeTracker();
-    await gazeTracker.load();
-    gazeTracker.start(videoElement);
-    
-    // Listen for gaze updates
-    gazeTracker.onGazeUpdate((gazeData) => {
-      highlightKey(gazeData.x, gazeData.y);
-    });
-  } catch (error) {
-    console.error('Error accessing camera:', error);
-  }
-}
+  const canvas = document.createElement('canvas');
+  const ctx = canvas.getContext('2d');
+  const keyboard = document.getElementById('keyboard');
+  const keys = keyboard.getElementsByClassName('key');
 
-// Function to highlight the key based on gaze position
-function highlightKey(x, y) {
-  const keys = document.querySelectorAll('.key');
-  keys.forEach((key) => {
-    const keyRect = key.getBoundingClientRect();
-    
-    if (x >= keyRect.left && x <= keyRect.right && y >= keyRect.top && y <= keyRect.bottom) {
-      key.classList.add('highlighted');
-    } else {
-      key.classList.remove('highlighted');
+  const model = await faceLandmarksDetection.load(
+    faceLandmarksDetection.SupportedPackages.mediapipeFacemesh,
+    { maxFaces: 1 }
+  );
+
+  function highlightKey(index) {
+    for (let i = 0; i < keys.length; i++) {
+      if (i === index) {
+        keys[i].classList.add('active');
+      } else {
+        keys[i].classList.remove('active');
+      }
     }
-  });
-}
+  }
 
-// Function to handle tapping on the screen and select the highlighted key
-function handleTap(event) {
-  const tappedElement = document.elementFromPoint(event.clientX, event.clientY);
-  const textbox = document.getElementById('textbox');
-  
-  if (tappedElement.classList.contains('key') && tappedElement.classList.contains('highlighted')) {
-    const keyValue = tappedElement.dataset.key;
+  function detectEyes(landmarks) {
+    const leftEye = landmarks.getLeftEye();
+    const rightEye = landmarks.getRightEye();
+    const eyesCenterX = (leftEye[0][0] + rightEye[3][0]) / 2;
+    const eyesCenterY = (leftEye[0][1] + rightEye[3][1]) / 2;
 
-    if (keyValue === 'Space') {
-      textbox.value += ' ';
-    } else if (keyValue === 'Delete') {
-      textbox.value = textbox.value.slice(0, -1);
-    } else if (keyValue === 'Enter') {
-      textbox.value += '\n';
-    } else if (keyValue === 'Ctrl') {
-      // Handle Ctrl key functionality
-      // Add your code here
-    } else if (keyValue === 'Voice') {
-      // Handle Voice key functionality
-      // Add your code here
-    } else {
+    highlightKey(getKeyIndex(eyesCenterX, eyesCenterY));
+  }
+
+  function getKeyIndex(x, y) {
+    const keyboardRect = keyboard.getBoundingClientRect();
+    const keyWidth = keyboardRect.width / 10;
+    const keyHeight = keyboardRect.height / 4;
+
+    const relativeX = x - keyboardRect.left;
+    const relativeY = y - keyboardRect.top;
+
+    const col = Math.floor(relativeX / keyWidth);
+    const row = Math.floor(relativeY / keyHeight);
+
+    return row * 10 + col;
+  }
+
+  function handleTap(event) {
+    const tappedElement = document.elementFromPoint(event.clientX, event.clientY);
+
+    if (tappedElement.classList.contains('key')) {
+      const keyValue = tappedElement.dataset.key;
+      const textbox = document.getElementById('textbox');
       textbox.value += keyValue;
     }
   }
+
+  function processFrame() {
+    ctx.drawImage(videoElement, 0, 0, canvas.width, canvas.height);
+    const image = tf.browser.fromPixels(canvas);
+    const predictions = model.estimateFaces({ input: image, returnTensors: false });
+    image.dispose();
+
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    if (predictions.length > 0) {
+      const landmarks = predictions[0].scaledMesh;
+      detectEyes(landmarks);
+    }
+
+    requestAnimationFrame(processFrame);
+  }
+
+  canvas.width = videoElement.width;
+  canvas.height = videoElement.height;
+
+  document.addEventListener('click', handleTap);
+
+  processFrame();
 }
 
 // Call the startVideo function when the page loads
-window.addEventListener('DOMContentLoaded', startVideo);
-
-// Call the startEyeTracking function when the page loads
-window.addEventListener('DOMContentLoaded', startEyeTracking);
-
-// Add an event listener to the document to handle tapping on the screen
-document.addEventListener('click', handleTap);
+window.addEventListener('DOMContentLoaded', () => {
+  startVideo();
+  startEyeTracking();
+});
