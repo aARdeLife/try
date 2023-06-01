@@ -105,6 +105,7 @@
       const keys = document.querySelectorAll('.key');
       const textbox = document.getElementById('textInput');
       const voiceButton = document.getElementById('voiceButton');
+      let recognition;
 
       keys.forEach((key) => {
         key.addEventListener('click', () => {
@@ -129,8 +130,31 @@
       });
 
       voiceButton.addEventListener('click', () => {
-        // Handle voice typing functionality here
-        // Add your code to start voice recognition
+        if (!recognition) {
+          recognition = new webkitSpeechRecognition();
+          recognition.continuous = true;
+          recognition.interimResults = false;
+          recognition.lang = 'en-US';
+
+          recognition.onstart = () => {
+            voiceButton.textContent = 'Stop Voice Typing';
+          };
+
+          recognition.onend = () => {
+            voiceButton.textContent = 'Start Voice Typing';
+          };
+
+          recognition.onresult = (event) => {
+            const result = event.results[event.results.length - 1][0].transcript;
+            textbox.value += result;
+          };
+        }
+
+        if (recognition && recognition.running) {
+          recognition.stop();
+        } else {
+          recognition.start();
+        }
       });
     });
   </script>
