@@ -4,72 +4,13 @@
 <head>
   <meta charset="UTF-8">
   <title>Eye-Tracking Keyboard</title>
-  <style>
-    body {
-      margin: 0;
-      padding: 0;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      height: 100vh;
-      background-image: url('background.jpg'); /* Replace 'background.jpg' with your own image */
-      background-size: cover;
-      background-position: center;
-      filter: blur(0px); /* Adjust the blur intensity as needed */
-    }
-
-    .container {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-    }
-
-    .keyboard {
-      display: grid;
-      grid-template-columns: repeat(10, 1fr);
-      gap: 5px;
-      background-color: rgba(255, 255, 255, 0.5); /* Adjust the transparency as needed */
-      padding: 10px;
-      backdrop-filter: blur(10px); /* Adjust the blur intensity as needed */
-    }
-
-    .key {
-      padding: 10px;
-      background-color: transparent;
-      text-align: center;
-      cursor: pointer;
-      color: black; /* Add desired color for key labels */
-      font-weight: bold; /* Adjust font weight as needed */
-    }
-
-    .textbox {
-      width: 300px;
-      margin-top: 20px;
-      padding: 10px;
-      border: 1px solid #ccc;
-      text-align: center;
-    }
-
-    .voice-button {
-      margin-top: 10px;
-      padding: 10px 20px;
-      background-color: #4CAF50; /* Add desired background color for voice button */
-      color: white; /* Add desired color for voice button text */
-      border: none;
-      cursor: pointer;
-    }
-    
-    <script src="https://cdn.jsdelivr.net/npm/three@0.132.0/build/three.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/xgaze/dist/xgaze.js"></script>
-
-  </style>
+  <link rel="stylesheet" href="styles.css">
 </head>
 
 <body>
   <div class="container">
-    <input type="text" class="textbox" id="textInput">
-
-    <div class="keyboard">
+    <video id="video" playsinline></video>
+    <div id="keyboard">
       <div class="key" data-key="Q">Q</div>
       <div class="key" data-key="W">W</div>
       <div class="key" data-key="E">E</div>
@@ -102,70 +43,21 @@
       <div class="key" data-key="Ctrl">Ctrl</div>
       <div class="key" data-key="Voice">Voice</div>
     </div>
-
+    <input type="text" id="textbox">
     <button class="voice-button" id="voiceButton">Start Voice Typing</button>
   </div>
 
-  <script>
-    document.addEventListener('DOMContentLoaded', () => {
-      const keys = document.querySelectorAll('.key');
-      const textbox = document.getElementById('textInput');
-      const voiceButton = document.getElementById('voiceButton');
-      let recognition;
-
-      keys.forEach((key) => {
-        key.addEventListener('click', () => {
-          const keyValue = key.dataset.key;
-
-          if (keyValue === 'Space') {
-            textbox.value += ' ';
-          } else if (keyValue === 'Delete') {
-            textbox.value = textbox.value.slice(0, -1);
-          } else if (keyValue === 'Enter') {
-            textbox.value += '\n';
-          } else if (keyValue === 'Ctrl') {
-            // Handle Ctrl key functionality
-            // Add your code here
-          } else if (keyValue === 'Voice') {
-            // Handle Voice key functionality
-            // Add your code here
-          } else {
-            textbox.value += keyValue;
-          }
-        });
-      });
-
-      voiceButton.addEventListener('click', () => {
-        if (!recognition) {
-          recognition = new webkitSpeechRecognition();
-          recognition.continuous = true;
-          recognition.interimResults = false;
-          recognition.lang = 'en-US';
-
-          recognition.onstart = () => {
-            voiceButton.textContent = 'Stop Voice Typing';
-          };
-
-          recognition.onend = () => {
-            voiceButton.textContent = 'Start Voice Typing';
-          };
-
-          recognition.onresult = (event) => {
-            const result = event.results[event.results.length - 1][0].transcript;
-            textbox.value += result;
-          };
-        }
-
-        if (recognition && recognition.running) {
-          recognition.stop();
-        } else {
-          recognition.start();
-        }
-      });
-    });
-  </script>
+  <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs-core"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs-converter"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/face-landmarks-detection"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/face-landmarks-detection/dist/face-landmarks-detection.umd.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/face-landmarks-detection/dist/face-landmarks-detection.umd.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/facemesh"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/facemesh/dist/facemesh.umd.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/facemesh/dist/facemesh.umd.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/xgaze/dist/xgaze.js"></script>
+  <script src="script.js"></script>
 </body>
 
 </html>
-
 
