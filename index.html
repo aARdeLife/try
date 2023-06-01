@@ -10,7 +10,7 @@
 <body>
   <div class="container">
     <video id="video" playsinline></video>
-    <div id="keyboard">
+    <div id="keyboard" class="keyboard">
       <div class="key" data-key="Q">Q</div>
       <div class="key" data-key="W">W</div>
       <div class="key" data-key="E">E</div>
@@ -43,21 +43,12 @@
       <div class="key" data-key="Ctrl">Ctrl</div>
       <div class="key" data-key="Voice">Voice</div>
     </div>
-    <input type="text" id="textbox">
-    <button class="voice-button" id="voiceButton">Start Voice Typing</button>
+    <input type="text" id="textbox" class="textbox">
   </div>
 
-  <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs-core"></script>
-  <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs-converter"></script>
-  <script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/face-landmarks-detection"></script>
-  <script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/face-landmarks-detection/dist/face-landmarks-detection.umd.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/face-landmarks-detection/dist/face-landmarks-detection.umd.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs"></script>
   <script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/facemesh"></script>
-  <script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/facemesh/dist/facemesh.umd.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/facemesh/dist/facemesh.umd.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/xgaze/dist/xgaze.js"></script>
-  <script src="script.js"></script>
+  <script src="app.js"></script>
 </body>
 
 </html>
-
