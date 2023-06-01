@@ -79,10 +79,3 @@ window.addEventListener('DOMContentLoaded', startEyeTracking);
 
 // Add an event listener to the document to handle tapping on the screen
 document.addEventListener('click', handleTap);
-
-
-// Call the startVideo function when the page loads
-window.addEventListener('DOMContentLoaded', startVideo);
-
-// Call the startEyeTracking function when the video stream is ready
-videoElement.addEventListener('loadeddata', startEyeTracking);
