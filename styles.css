@@ -1,20 +1,37 @@
 .container {
-  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
 }
 
 video {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
+  width: 320px;
+  height: 240px;
 }
 
 #keyboard {
-  /* Keyboard styles */
+  display: grid;
+  grid-template-columns: repeat(10, 1fr);
+  gap: 5px;
+  margin-top: 10px;
 }
 
-#textbox {
-  /* Textbox styles */
+.key {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 40px;
+  background-color: lightgray;
+  cursor: pointer;
+}
+
+input[type="text"] {
+  width: 300px;
+  margin-top: 10px;
+}
+
+.voice-button {
+  margin-top: 10px;
 }
